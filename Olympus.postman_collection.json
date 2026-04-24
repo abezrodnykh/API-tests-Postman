@@ -1,0 +1,974 @@
+{
+  "info": {
+    "_postman_id": "62aa6f52-04bf-4b42-bcac-f0eed1caf3b7",
+    "name": "Olympus",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53047884",
+    "_collection_link": "https://go.postman.co/collection/53047884-62aa6f52-04bf-4b42-bcac-f0eed1caf3b7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authorization",
+      "item": [
+        {
+          "name": "201 - Регистрация нового пользователя",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// 1. Генерация числа от 1 до 500\r",
+                  "const randomId = Math.floor(Math.random() * 500) + 1;\r",
+                  "\r",
+                  "// 2. Генерация строки с текущей датой, чтобы сделать имя уникальным\r",
+                  "const timestamp = Date.now();\r",
+                  "const uniqueName = \"test_user_\" + timestamp;\r",
+                  "\r",
+                  "// ТЕПЕРЬ СОХРАНЯЕМ В ПЕРЕМЕННЫЕ:\r",
+                  "// Мы кладем эти значения в \"окружение\", чтобы использовать их в самом запросе\r",
+                  "pm.environment.set(\"temp_id\", randomId);\r",
+                  "pm.environment.set(\"temp_name\", uniqueName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"{{temp_name}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Ok - Вход и получение токена",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Превращаем текстовый ответ сервера в понятный JSON-объект\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "// 2. Ищем в этом объекте поле с токеном. \r",
+                  "// В разных API оно может называться \"token\", \"access_token\" или \"blessing\"\r",
+                  "const myToken = jsonData.token; //token – это ключ в JSON {\"token\":\"значение}\r",
+                  "\r",
+                  "// 3. Сохраняем это значение в переменную коллекции под именем \"token\"\r",
+                  "// Теперь это значение доступно во всей твоей коллекции через {{token}}\r",
+                  "pm.environment.set(\"token\", myToken);\r",
+                  "\r",
+                  "// Бонус: Выведем сообщение в консоль, чтобы убедиться, что всё прошло успешно\r",
+                  "console.log(\"Благословение получено и записано в Кадуцей!\");\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\tpm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gods",
+      "item": [
+        {
+          "name": "200 Ok - Успешное получение списка всех сущностей",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mythology/?category=gods&sort=asc",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "gods"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 Bad Request - Получение списка всех сущностей с выключенным заголовком Hosts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true,
+            "disabledSystemHeaders": {
+              "host": true
+            }
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/?category=gods&sort=asc",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "gods"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "201 Create - Успешное добавление новой сущности",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 1. Схема для валидации одного объекта\r",
+                  "const mythologySchema = {\r",
+                  "  \"type\": \"object\",\r",
+                  "  \"required\": [\"id\", \"name\", \"category\", \"desc\", \"img\"],\r",
+                  "  \"properties\": {\r",
+                  "    \"id\": { \"type\": \"number\" },\r",
+                  "    \"name\": { \"type\": \"string\" },\r",
+                  "    \"category\": { \"type\": \"string\" },\r",
+                  "    \"desc\": { \"type\": \"string\" },\r",
+                  "    \"img\": { \"type\": \"string\" }\r",
+                  "  }\r",
+                  "};\r",
+                  "\r",
+                  "// 2. Проверка соответствия ответа схеме\r",
+                  "pm.test(\"Схема ответа валидна (MythologyEntity)\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(mythologySchema);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Проверка что это объект\r",
+                  "pm.test(\"Ответ является объектом\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.be.an('object');\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// 1. Парсим тело ответа в JSON-объект\r",
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "// 2. Извлекаем значения (путь зависит от структуры вашего JSON)\r",
+                  "const id = responseData.id;\r",
+                  "const name = responseData.name;\r",
+                  "const category = responseData.category;\r",
+                  "const desc = responseData.desc;\r",
+                  "const img = responseData.img;\r",
+                  " \r",
+                  "\r",
+                  "// 3. Сохраняем в переменнst коллекции (наиболее удобный вариант)\r",
+                  "pm.environment.set(\"extracted_id\", id);\r",
+                  "pm.environment.set(\"extracted_name\", name);\r",
+                  "pm.environment.set(\"extracted_category\", category);\r",
+                  "pm.environment.set(\"extracted_desc\", desc);\r",
+                  "pm.environment.set(\"extracted_img\", img);\r",
+                  "// Альтернатива: сохранить в глобальную переменную\r",
+                  "// pm.globals.set(\"extracted_id\", id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// 1. Генерация числа от 1 до 500\r",
+                  "const randomId = Math.floor(Math.random() * 500) + 1;\r",
+                  "\r",
+                  "// 2. Генерация строки с текущей датой, чтобы сделать имя уникальным\r",
+                  "const timestamp = Date.now();\r",
+                  "const uniqueName = \"test_user_\" + timestamp;\r",
+                  "\r",
+                  "// ТЕПЕРЬ СОХРАНЯЕМ В ПЕРЕМЕННЫЕ:\r",
+                  "// Мы кладем эти значения в \"окружение\", чтобы использовать их в самом запросе\r",
+                  "pm.environment.set(\"temp_id\", randomId);\r",
+                  "pm.environment.set(\"temp_name\", uniqueName);\r",
+                  "\r",
+                  "\r",
+                  "const _ = require('lodash');\r",
+                  "\r",
+                  "// Выбрать случайное значение из списка (массива)\r",
+                  "const roles = [\"gods\", \"heroes\", \"creatures\"];\r",
+                  "const randomRole = _.sample(roles);\r",
+                  "\r",
+                  "pm.environment.set(\"random_role\", randomRole);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{temp_name}}\",\r\n  \"category\": \"{{random_role}}\",\r\n  \"desc\": \"{{$randomPhrase}}\",\r\n  \"img\": \"{{$randomImageUrl}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 Bad Request - Добавление новой сущности без обязательного поля",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Проверка что это объект\r",
+                  "pm.test(\"Ответ является объектом\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.be.an('object');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// 1. Генерация числа от 1 до 500\r",
+                  "const randomId = Math.floor(Math.random() * 500) + 1;\r",
+                  "\r",
+                  "// 2. Генерация строки с текущей датой, чтобы сделать имя уникальным\r",
+                  "const timestamp = Date.now();\r",
+                  "const uniqueName = \"test_user_\" + timestamp;\r",
+                  "\r",
+                  "// ТЕПЕРЬ СОХРАНЯЕМ В ПЕРЕМЕННЫЕ:\r",
+                  "// Мы кладем эти значения в \"окружение\", чтобы использовать их в самом запросе\r",
+                  "pm.environment.set(\"temp_id\", randomId);\r",
+                  "pm.environment.set(\"temp_name\", uniqueName);\r",
+                  "\r",
+                  "\r",
+                  "const _ = require('lodash');\r",
+                  "\r",
+                  "// Выбрать случайное значение из списка (массива)\r",
+                  "const roles = [\"gods\", \"heroes\", \"creatures\"];\r",
+                  "const randomRole = _.sample(roles);\r",
+                  "\r",
+                  "pm.environment.set(\"random_role\", randomRole);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{temp_name}}\",\r\n  \"img\": \"{{$randomImageUrl}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Ok - Успешное получение сущности по id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Проверка значений объекта\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "\r",
+                  "    const expectedId = pm.variables.get(\"extracted_id\");\r",
+                  "    const expectedName = pm.variables.get(\"extracted_name\"); // предполагаем, что имя сохранено здесь\r",
+                  "    const expectedCategory = pm.variables.get(\"extracted_category\");\r",
+                  "\t\tconst expectedDesc = pm.variables.get(\"extracted_desc\");\r",
+                  "\t\tconst expectImg = pm.variables.get(\"extracted_img\");\r",
+                  "\r",
+                  "\r",
+                  "    // Сравниваем данные из ответа с переменными\r",
+                  "    // Используем Number(), так как из переменных значения часто приходят как строки\r",
+                  "    pm.expect(jsonData.id).to.eql(Number(expectedId)); \r",
+                  "    pm.expect(jsonData.name).to.eql(expectedName);\r",
+                  "    pm.expect(jsonData.category).to.eql(expectedCategory);\r",
+                  "\t\tpm.expect(jsonData.desc).to.eql(expectedDesc);\r",
+                  "\t\tpm.expect(jsonData.img).to.eql(expectImg);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Ok - Частичное обновление сущности",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 1. Генерация числа от 1 до 500\r",
+                  "const randomId = Math.floor(Math.random() * 500) + 1;\r",
+                  "\r",
+                  "// 2. Генерация строки с текущей датой, чтобы сделать имя уникальным\r",
+                  "const timestamp = Date.now();\r",
+                  "const uniqueName = \"test_user_\" + timestamp;\r",
+                  "\r",
+                  "// ТЕПЕРЬ СОХРАНЯЕМ В ПЕРЕМЕННЫЕ:\r",
+                  "// Мы кладем эти значения в \"окружение\", чтобы использовать их в самом запросе\r",
+                  "pm.environment.set(\"temp_id\", randomId);\r",
+                  "pm.environment.set(\"temp_name\", uniqueName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{temp_name}}\"\r\n}\r\n    ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "500 Internal Server Error - Частичное обновление сущности с выключенным заголовком Content-Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 500\", function () {\r",
+                  "    pm.response.to.have.status(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 1. Генерация числа от 1 до 500\r",
+                  "const randomId = Math.floor(Math.random() * 500) + 1;\r",
+                  "\r",
+                  "// 2. Генерация строки с текущей датой, чтобы сделать имя уникальным\r",
+                  "const timestamp = Date.now();\r",
+                  "const uniqueName = \"test_user_\" + timestamp;\r",
+                  "\r",
+                  "// ТЕПЕРЬ СОХРАНЯЕМ В ПЕРЕМЕННЫЕ:\r",
+                  "// Мы кладем эти значения в \"окружение\", чтобы использовать их в самом запросе\r",
+                  "pm.environment.set(\"temp_id\", randomId);\r",
+                  "pm.environment.set(\"temp_name\", uniqueName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "content-type": true
+            }
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{temp_name}}\"\r\n}\r\n    ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Ok - Полное обновление сущности",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "// 1. Схема для валидации одного объекта\r",
+                  "const mythologySchema = {\r",
+                  "  \"type\": \"object\",\r",
+                  "  \"required\": [\"id\", \"name\", \"category\", \"desc\", \"img\"],\r",
+                  "  \"properties\": {\r",
+                  "    \"id\": { \"type\": \"number\" },\r",
+                  "    \"name\": { \"type\": \"string\" },\r",
+                  "    \"category\": { \"type\": \"string\" },\r",
+                  "    \"desc\": { \"type\": \"string\" },\r",
+                  "    \"img\": { \"type\": \"string\" }\r",
+                  "  }\r",
+                  "};\r",
+                  "\r",
+                  "// 2. Проверка соответствия ответа схеме\r",
+                  "pm.test(\"Схема ответа валидна (MythologyEntity)\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(mythologySchema);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Проверка что это объект\r",
+                  "pm.test(\"Ответ является объектом\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.be.an('object');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Посейдон_001\",\r\n    \"category\": \"gods\",\r\n    \"desc\": \"Бог морей и землетрясений.\",\r\n    \"img\": \"https://images.unsplash.com/photo-1503152394-c571994fd383\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "400 Bad Request - Полное обновление сущности  без обязательного поля в теле",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(400);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Проверка что это объект\r",
+                  "pm.test(\"Ответ является объектом\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.be.an('object');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Посейдон_001\",\r\n    \"desc\": \"Бог морей и землетрясений.\",\r\n    \"img\": \"https://images.unsplash.com/photo-1503152394-c571994fd383\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "204 No Content - Удаление сущности",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Посейдон_001\",\r\n    \"category\": \"gods\",\r\n    \"desc\": \"Бог морей и землетрясений.\",\r\n    \"img\": \"https://images.unsplash.com/photo-1503152394-c571994fd383\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "404 No Found - Повторное удаление сущности",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Посейдон_001\",\r\n    \"category\": \"gods\",\r\n    \"desc\": \"Бог морей и землетрясений.\",\r\n    \"img\": \"https://images.unsplash.com/photo-1503152394-c571994fd383\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/mythology/{{extracted_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mythology",
+                "{{extracted_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mock - запрос",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "Mock - запрос",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{mock_url}}/mythology-mock",
+                  "host": [
+                    "{{mock_url}}"
+                  ],
+                  "path": [
+                    "mythology-mock"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "[\r\n  {\r\n    \"id\": 12345,\r\n    \"name\": \"Посейдон\",\r\n    \"category\": \"gods\",\r\n    \"desc\": \"Бог морей и землетрясений.\",\r\n    \"img\": \"https://images.unsplash.com/photo-1503152394-c571994fd383\"\r\n  }\r\n]"
+            }
+          ]
+        },
+        {
+          "name": "Mock-Post-запрос",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{mock_url}}/mythology-olympus",
+              "host": [
+                "{{mock_url}}"
+              ],
+              "path": [
+                "mythology-olympus"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Mock-Post-запрос",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{mock_url}}/mythology-olympus",
+                  "host": [
+                    "{{mock_url}}"
+                  ],
+                  "path": [
+                    "mythology-olympus"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n  \"id\": 777\r\n  \"name\": \"super ninja\" ,\r\n  \"age\": 35\r\n  \"status\": \"active\",\r\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Creatures",
+      "item": []
+    },
+    {
+      "name": "Heroes",
+      "item": []
+    },
+    {
+      "name": "Redirection",
+      "item": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{vault:token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "username",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
